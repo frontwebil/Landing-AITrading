@@ -4,7 +4,6 @@ interface PricingCardProps {
   name: string;
   price?: string;
   features: string[];
-  badge?: string;
   recommended?: boolean;
   limited?: boolean;
   test?: boolean;
@@ -14,7 +13,6 @@ export default function PricingCard({
   name,
   price,
   features,
-  badge,
   recommended,
   test,
   limited,
@@ -38,7 +36,9 @@ export default function PricingCard({
       {test && (
         <div className="absolute -top-4 right-4">
           <div className="flex items-center gap-2 px-4 py-2 bg-purple-500/30 border border-purple-500/50 rounded-full">
-            <span className="text-purple-400 text-xs font-bold">Тестовый доступ</span>
+            <span className="text-purple-400 text-xs font-bold">
+              Тестовый доступ
+            </span>
           </div>
         </div>
       )}
