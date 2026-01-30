@@ -67,6 +67,9 @@ export default function LiveTerminal() {
   const [trades, setTrades] = useState<Trade[]>([]);
   const [winRate, setWinRate] = useState(80);
 
+  const delay = (ms: number) =>
+    new Promise((resolve) => setTimeout(resolve, ms));
+
   function pushLog(text: string, type: Log["type"]) {
     setLogs((prev) =>
       [
@@ -179,9 +182,6 @@ export default function LiveTerminal() {
       .map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`)
       .join(" ");
   }
-
-  const delay = (ms: number) =>
-    new Promise((resolve) => setTimeout(resolve, ms));
 
   return (
     <>
