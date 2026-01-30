@@ -39,20 +39,20 @@ export default function AIBot({ aiState }: { aiState: AIState }) {
 
           <div className="absolute top-1/4 left-1/4 transform -translate-x-1/2">
             <div className="relative">
-              <Eye className="w-8 h-8 text-purple-400" />
+              {/* <Eye className="w-8 h-8 text-purple-400" /> */}
               <div className="absolute inset-0 bg-purple-500/50 blur-xl animate-pulse"></div>
             </div>
           </div>
 
           <div className="absolute top-1/4 right-1/4 transform translate-x-1/2">
             <div className="relative">
-              <Eye className="w-8 h-8 text-purple-400" />
+              {/* <Eye className="w-8 h-8 text-purple-400" /> */}
               <div className="absolute inset-0 bg-purple-500/50 blur-xl animate-pulse"></div>
             </div>
           </div>
 
           <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
-            <Activity className="w-6 h-6 text-orange-400 animate-pulse" />
+            {/* <Activity className="w-6 h-6 text-orange-400 animate-pulse" /> */}
           </div>
 
           <div className="absolute inset-0 animate-rotate-ring">
