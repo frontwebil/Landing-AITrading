@@ -1,22 +1,13 @@
-import { useEffect, useState } from "react";
 import { Activity, Brain, Eye } from "lucide-react";
 
-type BotState = "Analyzing" | "Executing" | "Monitoring";
+export type AIState =
+  | "ANALYZING"
+  | "ENTRY"
+  | "EXECUTING"
+  | "MONITORING"
+  | "CLOSING";
 
-export default function AIBot() {
-  const [state, setState] = useState<BotState>("Analyzing");
-
-  useEffect(() => {
-    const stateInterval = setInterval(() => {
-      const states: BotState[] = ["Analyzing", "Executing", "Monitoring"];
-      setState(states[Math.floor(Math.random() * states.length)]);
-    }, 3000);
-
-    return () => {
-      clearInterval(stateInterval);
-    };
-  }, []);
-
+export default function AIBot({ aiState }: { aiState: AIState }) {
   return (
     <div className="relative w-full max-w-md mx-auto">
       <div className="relative aspect-square">
@@ -96,7 +87,7 @@ export default function AIBot() {
       <div className="mt-8 text-center">
         <div className="inline-flex items-center gap-2 px-6 py-3 bg-black/60 backdrop-blur-xl border border-purple-500/30 rounded-full">
           <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-lg shadow-green-400/50"></div>
-          <span className="text-purple-400 font-mono text-sm">{state}</span>
+          <span className="text-purple-400 font-mono text-sm">{aiState}</span>
         </div>
       </div>
     </div>

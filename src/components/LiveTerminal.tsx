@@ -6,7 +6,6 @@ import StatsCard from "./StatsCard";
 import AIBot from "./AIBot";
 
 const PAIRS = [
-  // TOP
   "BTC/USDT",
   "ETH/USDT",
   "BNB/USDT",
@@ -47,28 +46,76 @@ interface Trade {
   time: string;
 }
 
+interface Log {
+  id: number;
+  text: string;
+  type: "AI" | "EXECUTION" | "MONITORING";
+  time: string;
+}
+
+export type AIState =
+  | "ANALYZING"
+  | "ENTRY"
+  | "EXECUTING"
+  | "MONITORING"
+  | "CLOSING";
+
 export default function LiveTerminal() {
+  const [aiState, setAiState] = useState<AIState>("ANALYZING");
+  const [logs, setLogs] = useState<Log[]>([]);
   const [balance, setBalance] = useState(100);
   const [trades, setTrades] = useState<Trade[]>([]);
-  const [winRate, setWinRate] = useState(81);
+  const [winRate, setWinRate] = useState(80);
+
+  function pushLog(text: string, type: Log["type"]) {
+    setLogs((prev) =>
+      [
+        {
+          id: Date.now() + Math.random(),
+          text,
+          type,
+          time: new Date().toLocaleTimeString(),
+        },
+        ...prev,
+      ].slice(0, 10),
+    );
+  }
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    let isRunning = false;
+
+    const runTradeCycle = async () => {
+      if (isRunning) return;
+      isRunning = true;
+
+      const pair = PAIRS[Math.floor(Math.random() * PAIRS.length)];
+
+      setAiState("ANALYZING");
+      pushLog("Scanning market opportunities", "AI");
+
+      await delay(1200);
+
+      setAiState("ENTRY");
+      pushLog(`Entry conditions confirmed for ${pair}`, "AI");
+
+      await delay(1000);
+
+      setAiState("EXECUTING");
+      pushLog(`Opening position on ${pair}`, "EXECUTION");
+
+      await delay(1000);
+      pushLog("Position opened successfully", "EXECUTION");
+
+      await delay(1300);
+
+      setAiState("MONITORING");
+      pushLog("Monitoring trade performance", "AI");
+
+      await delay(1400);
+
       const percent = +(Math.random() * (10 - 2) + 2).toFixed(2);
       const profit = +(balance * (percent / 100)).toFixed(2);
       const newBalance = +(balance + profit).toFixed(2);
-
-      const trade: Trade = {
-        id: Date.now(),
-        pair: PAIRS[Math.floor(Math.random() * PAIRS.length)],
-        percent,
-        profit,
-        balanceAfter: newBalance,
-        time: new Date().toLocaleTimeString(),
-      };
-
-      setBalance(newBalance);
-      setTrades((prev) => [trade, ...prev].slice(0, 50));
 
       setWinRate((w) =>
         Math.min(
@@ -76,7 +123,35 @@ export default function LiveTerminal() {
           Math.max(55, +(w + (Math.random() * 1.2 - 0.4)).toFixed(1)),
         ),
       );
-    }, 3500);
+
+      setAiState("CLOSING");
+      pushLog(`Position closed +${percent}% (+$${profit})`, "EXECUTION");
+
+      await delay(1000);
+
+      setAiState("MONITORING");
+      pushLog(`Balance updated: $${newBalance}`, "MONITORING");
+
+      setBalance(newBalance);
+
+      setTrades((prev) =>
+        [
+          {
+            id: Date.now(),
+            pair,
+            percent,
+            profit,
+            balanceAfter: newBalance,
+            time: new Date().toLocaleTimeString(),
+          },
+          ...prev,
+        ].slice(0, 50),
+      );
+
+      isRunning = false;
+    };
+
+    const interval = setInterval(runTradeCycle, 5500);
 
     return () => clearInterval(interval);
   }, [balance]);
@@ -84,7 +159,6 @@ export default function LiveTerminal() {
   const totalProfit = balance - 100;
   const lastTrade = trades[0];
 
-  // Generate chart points - только если есть минимум 3 сделки
   const chartData = trades.slice(0, 30).reverse();
   const hasEnoughData = chartData.length >= 3;
 
@@ -106,12 +180,14 @@ export default function LiveTerminal() {
       .join(" ");
   }
 
+  const delay = (ms: number) =>
+    new Promise((resolve) => setTimeout(resolve, ms));
+
   return (
     <>
       <div className="grid lg:grid-cols-2 gap-8 items-start mb-12">
-        <AIBot />
+        <AIBot aiState={aiState} />
         <div className="space-y-6">
-          {/* TERMINAL */}
           <div className="bg-black/60 backdrop-blur-xl border border-purple-500/30 rounded-2xl p-6 shadow-2xl">
             <div className="flex justify-between mb-4">
               <div className="flex items-center gap-2">
@@ -126,26 +202,29 @@ export default function LiveTerminal() {
               </span>
             </div>
 
-            {/* LOG TERMINAL */}
             <div className="space-y-2 font-mono text-sm mb-6">
-              {trades.slice(0, 7).map((t) => (
-                <div key={t.id} className="flex gap-3 animate-fade">
-                  <span className="text-gray-500">[{t.time}]</span>
-                  <span className="text-cyan-400">EXECUTION:</span>
-                  <span className="text-gray-300">
-                    {t.pair} closed{" "}
-                    <span className="text-green-400 font-semibold">
-                      +{t.percent}%
-                    </span>{" "}
-                    (${t.profit.toFixed(2)}) → balance $
-                    {t.balanceAfter.toFixed(2)}
+              {logs.map((log) => (
+                <div key={log.id} className="flex gap-3 animate-fade">
+                  <span className="text-gray-500">[{log.time}]</span>
+
+                  <span
+                    className={
+                      log.type === "AI"
+                        ? "text-purple-400"
+                        : log.type === "EXECUTION"
+                          ? "text-cyan-400"
+                          : "text-green-400"
+                    }
+                  >
+                    [{log.type}]
                   </span>
+
+                  <span className="text-gray-300">{log.text}</span>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* STATS */}
           <div className="grid grid-cols-2 md:grid-cols-2 gap-4">
             <StatsCard
               icon={TrendingUp}
@@ -188,13 +267,10 @@ export default function LiveTerminal() {
         </div>
       </div>
 
-      {/* CHART CARD */}
       <div className="bg-black/60 backdrop-blur-xl border border-purple-500/30 rounded-2xl p-6 shadow-2xl overflow-hidden relative">
-        {/* Purple/Cyan glow */}
         <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-transparent to-cyan-500/10 pointer-events-none" />
 
         <div className="relative z-10">
-          {/* Header */}
           <div className="flex justify-between items-start mb-8">
             <div>
               <div className="text-gray-400 text-xs uppercase tracking-wider mb-2 font-mono">
@@ -212,7 +288,6 @@ export default function LiveTerminal() {
             </div>
           </div>
 
-          {/* Chart */}
           <div className="relative h-40 mb-6">
             {hasEnoughData ? (
               <svg
@@ -220,7 +295,6 @@ export default function LiveTerminal() {
                 className="w-full h-full"
                 preserveAspectRatio="none"
               >
-                {/* Gradient fill */}
                 <defs>
                   <linearGradient
                     id="chartGradient"
@@ -234,7 +308,6 @@ export default function LiveTerminal() {
                     <stop offset="100%" stopColor="#06b6d4" stopOpacity="0" />
                   </linearGradient>
 
-                  {/* Glow effect for line */}
                   <filter id="glow">
                     <feGaussianBlur stdDeviation="1" result="coloredBlur" />
                     <feMerge>
@@ -244,13 +317,11 @@ export default function LiveTerminal() {
                   </filter>
                 </defs>
 
-                {/* Fill area */}
                 <path
                   d={`${pathData} L 100 100 L 0 100 Z`}
                   fill="url(#chartGradient)"
                 />
 
-                {/* Line with glow */}
                 <path
                   d={pathData}
                   fill="none"
@@ -270,7 +341,6 @@ export default function LiveTerminal() {
             )}
           </div>
 
-          {/* Profit Display */}
           <div className="bg-gradient-to-br from-gray-900/80 to-black/80 backdrop-blur-xl border border-purple-500/20 rounded-xl p-5 text-center shadow-lg">
             <div className="text-gray-400  text-xs font-bold uppercase tracking-wider mb-1.5">
               Profit

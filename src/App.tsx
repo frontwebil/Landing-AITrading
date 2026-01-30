@@ -19,13 +19,13 @@ const humanData = [
   { x: 1, value: 1 },
   { x: 2, value: 13 },
   { x: 3, value: 3 },
-  { x: 4, value: 13 },
+  { x: 4, value: 41 },
   { x: 5, value: 7 },
-  { x: 6, value: 43 },
+  { x: 6, value: 13 },
   { x: 7, value: 3 },
   { x: 8, value: 13 },
   { x: 9, value: 7 },
-  { x: 10, value: 7 },
+  { x: 10, value: 1 },
 ];
 
 const aiData = [
@@ -69,8 +69,7 @@ function App() {
               <div className="space-y-8">
                 <div>
                   <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-tight mb-6">
-                    АИ работает.
-                    <br />
+                    АИ работает. <br />
                     <span className="bg-gradient-to-r from-purple-400 to-orange-400 bg-clip-text text-transparent">
                       Вы наблюдаете.
                     </span>
@@ -328,8 +327,8 @@ function App() {
             <div className="grid md:grid-cols-3 gap-8 mb-12">
               <PricingCard
                 name="START"
+                test
                 price="250 €"
-                badge="Тестовый доступ"
                 features={[
                   "Знакомство с логикой AI",
                   "Полная автоматизация",

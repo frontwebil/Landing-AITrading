@@ -7,6 +7,7 @@ interface PricingCardProps {
   badge?: string;
   recommended?: boolean;
   limited?: boolean;
+  test?: boolean;
 }
 
 export default function PricingCard({
@@ -15,14 +16,13 @@ export default function PricingCard({
   features,
   badge,
   recommended,
+  test,
   limited,
 }: PricingCardProps) {
   return (
     <div
       className={`relative bg-gradient-to-br from-gray-900/90 to-black/90 backdrop-blur-xl flex flex-col border ${
-        recommended
-          ? "border-orange-500/60 scale-105"
-          : "border-purple-500/30 "
+        recommended ? "border-orange-500/60 scale-105" : "border-purple-500/30 "
       } rounded-3xl p-8 transition-all duration-300 hover:scale-105 hover:border-purple-500/60 ${
         recommended ? "shadow-2xl shadow-orange-500/20" : ""
       }`}
@@ -35,9 +35,17 @@ export default function PricingCard({
         </div>
       )}
 
+      {test && (
+        <div className="absolute -top-4 right-4">
+          <div className="flex items-center gap-2 px-4 py-2 bg-purple-500/30 border border-purple-500/50 rounded-full">
+            <span className="text-purple-400 text-xs font-bold">Тестовый доступ</span>
+          </div>
+        </div>
+      )}
+
       {limited && (
         <div className="absolute -top-4 right-4">
-          <div className="flex items-center gap-2 px-4 py-2 bg-purple-500/20 border border-purple-500/50 rounded-full">
+          <div className="flex items-center gap-2 px-4 py-2 bg-purple-500/30 border border-purple-500/50 rounded-full">
             <Zap className="w-4 h-4 text-purple-400" />
             <span className="text-purple-400 text-xs font-bold">LIMITED</span>
           </div>
@@ -45,13 +53,13 @@ export default function PricingCard({
       )}
 
       <div className="mb-6">
-        {badge && (
+        {/* {badge && (
           <div className="inline-block px-3 py-1 bg-purple-500/20 border border-purple-500/30 rounded-full mb-4">
             <span className="text-purple-400 text-sm font-semibold">
               {badge}
             </span>
           </div>
-        )}
+        )} */}
         <h3 className="text-2xl font-bold text-white mb-2">{name}</h3>
         {price && (
           <div className="flex items-baseline gap-2">

@@ -20,7 +20,6 @@ export default function ChartCard({ color, data }: ChartCardProps) {
         ${color}
       `}
     >
-      {/* CHART */}
       <div className="h-40 mb-4">
         <ResponsiveContainer>
           <LineChart data={data}>
@@ -32,7 +31,7 @@ export default function ChartCard({ color, data }: ChartCardProps) {
               strokeWidth={3}
               stroke="currentColor"
               dot={false}
-              activeDot={false} // 👈 Отключает активную точку при наведении
+              activeDot={false}
               isAnimationActive={false}
             />
           </LineChart>
