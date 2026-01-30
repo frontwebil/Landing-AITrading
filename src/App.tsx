@@ -59,17 +59,6 @@ function App() {
                   SMARTCHAIN AI
                 </span>
               </div>
-              <div className="hidden md:flex items-center gap-6 text-sm">
-                <div className="flex items-center gap-2 text-purple-400">
-                  <span className="font-mono">AI-powered</span>
-                </div>
-                <div className="flex items-center gap-2 text-orange-400">
-                  <span className="font-mono">Crypto</span>
-                </div>
-                <div className="flex items-center gap-2 text-gray-400">
-                  <span className="font-mono">Automation</span>
-                </div>
-              </div>
             </div>
           </div>
         </header>

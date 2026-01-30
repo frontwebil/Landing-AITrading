@@ -5,7 +5,6 @@ type BotState = "Analyzing" | "Executing" | "Monitoring";
 
 export default function AIBot() {
   const [state, setState] = useState<BotState>("Analyzing");
-  const [pulse, setPulse] = useState(0);
 
   useEffect(() => {
     const stateInterval = setInterval(() => {
@@ -13,13 +12,8 @@ export default function AIBot() {
       setState(states[Math.floor(Math.random() * states.length)]);
     }, 3000);
 
-    const pulseInterval = setInterval(() => {
-      setPulse((prev) => (prev + 1) % 100);
-    }, 50);
-
     return () => {
       clearInterval(stateInterval);
-      clearInterval(pulseInterval);
     };
   }, []);
 
