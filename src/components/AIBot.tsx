@@ -1,4 +1,4 @@
-import { Activity, Brain, Eye } from "lucide-react";
+import { Brain } from "lucide-react";
 
 export type AIState =
   | "ANALYZING"
